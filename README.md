@@ -2,6 +2,8 @@
 
 A weekly study planner. Create subjects, log assignments with due dates and time estimates, schedule study sessions, and track completion overall and per subject.
 
+![Landing with the live weekly timeline](docs/landing.png)
+
 ![Week view](docs/week.png)
 
 | Mobile | Landing |
@@ -25,7 +27,11 @@ npm run test:e2e   # Playwright smoke test (run `npm run e2e:install` once if Ch
 3. **Week** → plan a session for a subject (optionally linked to an assignment) on a date, start time and duration. Overlapping sessions are rejected with a message naming the clash.
 4. Tick sessions as studied. The stat tiles show planned vs studied time, items due this week and overall completion.
 
-Demo content: on an empty Week or Assignments page choose **Load demo plan** (subjects are prefixed “Demo:”; dates are generated around the current week).
+Demo content: the planner opens with a labelled demo plan generated around the current week; after clearing, an empty Week page offers **Load demo plan**.
+
+## Design
+
+Shared editorial system (Fraunces display). The hero preview is a real timeline rendering of the demo plan for the current week. The app opens with that labelled demo plan; **Subjects → Clear all data** returns to the guided empty state.
 
 ## States covered
 
