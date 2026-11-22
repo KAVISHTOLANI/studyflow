@@ -770,3 +770,8 @@ pre.output {
   max-height: 480px;
   margin: 0;
 }
+.card.list,
+ul.card,
+ol.card {
+  padding: 4px 18px;
+}
