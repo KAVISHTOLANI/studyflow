@@ -28,7 +28,7 @@ type SetData = (fn: (d: PlannerData) => PlannerData) => void;
 
 export default function App() {
   const [route] = useRoute();
-  const [data, setRaw] = usePersistentState<PlannerData>('studyflow:data', EMPTY);
+  const [data, setRaw] = usePersistentState<PlannerData>('studyflow:data', () => demoData());
   const setData: SetData = (fn) => setRaw((d) => fn(d));
   const today = toISO(new Date());
 
@@ -42,47 +42,71 @@ export default function App() {
   else page = <NotFound />;
 
   return (
-    <Shell name="StudyFlow" mark="SF" nav={NAV} route={route}>
+    <Shell name="StudyFlow" wordmark={['Study', 'Flow']} nav={NAV} route={route} cta={{ to: '/week', label: 'Open my week' }}>
       {page}
     </Shell>
+  );
+}
+
+function HeroWeek() {
+  const today = toISO(new Date());
+  const d = demoData(today);
+  const mon = weekStart(today);
+  const days = weekDays(mon).slice(0, 5);
+  const top = 8 * 60, span = 12 * 60;
+  const subj = (id: string) => d.subjects.find((s) => s.id === id)!;
+  return (
+    <div className="hero-week">
+      <div className="hw-axis" aria-hidden="true">
+        {[8, 11, 14, 17, 20].map((h) => <span key={h} style={{ top: `${((h * 60 - top) / span) * 100}%` }}>{String(h).padStart(2, '0')}:00</span>)}
+      </div>
+      {days.map((day) => (
+        <div key={day} className={`hw-day ${day === today ? 'is-today' : ''}`}>
+          <div className="hw-head">{formatDay(day, { weekday: 'short' })} <span>{formatDay(day, { day: 'numeric' })}</span></div>
+          <div className="hw-col">
+            {d.assignments.filter((a) => a.due === day).map((a) => (
+              <div key={a.id} className={`hw-due ${a.done ? 'done' : ''}`} title={a.title}>Due · {a.title.split(':')[0]}</div>
+            ))}
+            {d.sessions.filter((s) => s.date === day).map((s) => {
+              const st = toMinutes(s.start)!;
+              return (
+                <div key={s.id} className={`hw-block ${s.done ? 'done' : ''}`} style={{ top: `${((st - top) / span) * 100}%`, height: `${(s.minutes / span) * 100}%`, ['--c' as string]: subj(s.subjectId).color }}>
+                  <strong>{s.start}</strong>
+                  <span>{subj(s.subjectId).name.replace('Demo: ', '')}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }
 
 function Home() {
   return (
     <Landing
-      eyebrow="Study planner"
-      title="See every deadline and study block for the week in one place."
-      lead="Add your subjects and assignments, schedule study sessions around them, and watch completion progress as you tick things off."
-      actions={
-        <>
-          <a className="btn btn-primary" href="#/week">Open my week</a>
-          <a className="btn" href="#/assignments">Add an assignment</a>
-        </>
-      }
-      preview={
-        <div className="mini-week" aria-hidden="true">
-          {['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].map((d, i) => (
-            <div key={d}>
-              <strong>{d}</strong>
-              {i !== 3 && <span style={{ background: ['#2563eb', '#16a34a', '#d97706', '', '#2563eb'][i] }}>{['16:00', '15:30', '10:00', '', '14:00'][i]}</span>}
-              {i === 3 && <em>Due: problem set</em>}
-            </div>
-          ))}
-        </div>
-      }
+      eyebrow="Study planner · weekly view"
+      title={<>Every deadline, <em>one week at a time.</em></>}
+      lead="Add subjects and assignments, schedule study sessions around their due dates, and watch completion climb as you tick things off. Overlaps are caught before they happen."
+      primary={{ href: '#/week', label: 'Open my week' }}
+      secondary={{ href: '#/assignments', label: 'See assignments' }}
+      previewLabel="This week — demo plan"
+      preview={<HeroWeek />}
       steps={[
         { title: 'Add subjects', body: 'Give each course a name and colour so the week reads at a glance.' },
         { title: 'Log assignments', body: 'Record the due date and how many hours you expect it to take.' },
         { title: 'Plan sessions', body: 'Book study blocks on specific days. Overlapping blocks are flagged.' },
       ]}
+      stepsIntro="StudyFlow opens with a labelled demo plan for the current week, so you can explore before entering your own."
       features={[
         { title: 'Weekly schedule', body: 'Seven-day view with sessions, deadlines and planned hours. Move between weeks.' },
         { title: 'Deadline status', body: 'Overdue, due today and due soon are highlighted in the assignment list.' },
         { title: 'Planned vs estimated', body: 'Each assignment shows how many of its estimated hours you have scheduled.' },
-        { title: 'Progress tracking', body: 'Completion percentage overall and per subject.' },
+        { title: 'Progress by subject', body: 'Completion percentage overall and for each course.' },
       ]}
-      note="Everything is stored in this browser. There are no accounts and no sync between devices yet."
+      note="Everything is stored in this browser. There are no accounts, reminders or sync between devices yet."
+      closing={{ title: <>Plan <em>this week.</em></>, action: { href: '#/week', label: 'Open my week' } }}
     />
   );
 }
@@ -123,7 +147,8 @@ function Week({ data, setData, today }: { data: PlannerData; setData: SetData; t
     <div className="stack">
       <div className="page-head">
         <div>
-          <h1>Week of {formatDay(start, { day: 'numeric', month: 'long' })}</h1>
+          <p className="eyebrow">Workspace · Week</p>
+          <h1>Week of <em>{formatDay(start, { day: 'numeric', month: 'long' })}</em></h1>
           <p>
             {formatDay(start)} – {formatDay(end)}
           </p>
@@ -273,7 +298,8 @@ function Assignments({ data, setData, today }: { data: PlannerData; setData: Set
     <div className="stack">
       <div className="page-head">
         <div>
-          <h1>Assignments</h1>
+          <p className="eyebrow">Workspace · Assignments</p>
+          <h1>Assign<em>ments</em></h1>
           <p>{progress(data.assignments).done} of {data.assignments.length} complete</p>
         </div>
         <Field label="Show subject">
@@ -382,8 +408,9 @@ function Subjects({ data, setData }: { data: PlannerData; setData: SetData }) {
     <div className="stack">
       <div className="page-head">
         <div>
-          <h1>Subjects</h1>
-          <p>Each subject gets a colour used throughout the planner.</p>
+          <p className="eyebrow">Workspace · Subjects</p>
+          <h1>Sub<em>jects</em></h1>
+          <p>Each subject gets a colour used throughout the planner. Subjects starting with “Demo:” are sample data.</p>
         </div>
         {data.subjects.length > 0 && (
           <button type="button" className="btn btn-danger" onClick={() => { if (window.confirm('Delete all subjects, assignments and sessions?')) setData(() => EMPTY); }}>

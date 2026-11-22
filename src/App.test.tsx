@@ -4,13 +4,21 @@ import userEvent from '@testing-library/user-event';
 import App from './App';
 
 describe('StudyFlow workflow', () => {
+  it('opens with a labelled demo plan', () => {
+    window.location.hash = '/assignments';
+    render(<App />);
+    expect(screen.getAllByText(/Demo: Statistics/).length).toBeGreaterThan(0);
+  });
+
   it('guides a new user to create a subject first', () => {
+    localStorage.setItem('studyflow:data', JSON.stringify({ subjects: [], assignments: [], sessions: [] }));
     window.location.hash = '/week';
     render(<App />);
     expect(screen.getByText('Start by adding a subject')).toBeInTheDocument();
   });
 
   it('creates a subject and assignment, plans a session and tracks completion', async () => {
+    localStorage.setItem('studyflow:data', JSON.stringify({ subjects: [], assignments: [], sessions: [] }));
     window.location.hash = '/subjects';
     const user = userEvent.setup();
     const { unmount } = render(<App />);
@@ -33,6 +41,7 @@ describe('StudyFlow workflow', () => {
   });
 
   it('flags overlapping sessions in the weekly plan', async () => {
+    localStorage.setItem('studyflow:data', JSON.stringify({ subjects: [], assignments: [], sessions: [] }));
     window.location.hash = '/week';
     const user = userEvent.setup();
     render(<App />);

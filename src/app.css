@@ -154,3 +154,106 @@
   min-height: 26px;
   padding: 2px 6px;
 }
+
+/* ---------- Hero timeline ---------- */
+.hero-week {
+  position: relative;
+  display: grid;
+  grid-template-columns: 42px repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  font-size: 0.74rem;
+}
+.hw-axis {
+  position: relative;
+  margin-top: 30px;
+  height: 340px;
+}
+.hw-axis span {
+  position: absolute;
+  left: 0;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--muted);
+}
+.hw-head {
+  height: 24px;
+  margin-bottom: 6px;
+  font-weight: 600;
+  display: flex;
+  gap: 4px;
+  align-items: baseline;
+}
+.hw-head span {
+  color: var(--muted);
+  font-weight: 400;
+}
+.hw-day.is-today .hw-head {
+  color: var(--accent-text);
+}
+.hw-col {
+  position: relative;
+  height: 340px;
+  border-radius: 4px;
+  background: repeating-linear-gradient(to bottom, var(--surface-2) 0 1px, transparent 1px 25%);
+  border: 1px solid var(--border);
+}
+.hw-day.is-today .hw-col {
+  border-color: var(--accent);
+}
+.hw-block {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--c) 16%, var(--surface));
+  border-left: 3px solid var(--c);
+  padding: 3px 5px;
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 5px;
+  align-content: flex-start;
+  line-height: 1.25;
+  animation: rise 0.7s var(--ease) both;
+}
+.hw-block span {
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hw-block.done {
+  opacity: 0.55;
+}
+.hw-due {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  top: 4px;
+  font-size: 0.66rem;
+  font-weight: 600;
+  color: var(--err);
+  border: 1px dashed var(--err);
+  border-radius: 4px;
+  padding: 2px 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hw-due.done {
+  color: var(--ok);
+  border-color: var(--ok);
+}
+.session {
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--surface-2) 70%, var(--surface));
+}
+.day {
+  border-radius: var(--radius);
+}
+.day h3 {
+  font-family: var(--font-display);
+  font-weight: 560;
+  font-size: 1.05rem;
+}
