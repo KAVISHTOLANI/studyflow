@@ -2,6 +2,8 @@
 
 A weekly study planner. Create subjects, log assignments with due dates and time estimates, schedule study sessions, and track completion overall and per subject.
 
+**Live demo:** [https://kavishtolani.github.io/studyflow/](https://kavishtolani.github.io/studyflow/) — runs entirely in your browser; demo data is fictional and labelled.
+
 ![Landing with the live weekly timeline](docs/landing.png)
 
 ![Week view](docs/week.png)
@@ -66,3 +68,7 @@ Shared editorial system (Fraunces display). The hero preview is a real timeline 
 - Drag-and-drop rescheduling and in-place editing.
 - Suggest sessions automatically from remaining estimated hours before each due date.
 - ICS export so sessions can be added to a calendar app.
+
+## Licence
+
+MIT — see [LICENSE](LICENSE).

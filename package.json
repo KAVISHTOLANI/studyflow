@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "description": "Plan subjects, assignments and study sessions week by week.",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",
